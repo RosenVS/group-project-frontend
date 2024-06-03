@@ -6,8 +6,8 @@ on:
 
 env:
   PROJECT_ID: inbound-pattern-422518-k7 # TODO: update Google Cloud project id
-  APP_NAME: foodmotion-frontend # TODO: update Artifact Registry location
-  SER_NAME: foodmotion-frontend # TODO: update Artifact Registry location
+  APP_NAME: groupproject-frontend # TODO: update Artifact Registry location
+  SER_NAME: groupproject-frontend # TODO: update Artifact Registry location
   REGION: europe-west1 # TODO: update Cloud Run service region
   SER_PORT: 8081 # TODO: update Cloud Run service region
 
