@@ -17,7 +17,7 @@ RUN npm run build
 FROM nginx:1.19
 
 # Copy custom nginx configuration
-COPY ./frontend/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./monitoringtool-fe/nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Copy the built React app from the build stage
 COPY --from=build /app/build /usr/share/nginx/html
