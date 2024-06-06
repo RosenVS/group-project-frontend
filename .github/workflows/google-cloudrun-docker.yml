@@ -36,5 +36,10 @@ jobs:
           gcloud run deploy ${{env.SER_NAME}} --image $IMAGE_NAME --port ${{env.SER_PORT}} --region ${{env.REGION}} --cpu=1 --memory=1Gi --timeout=3000 --allow-unauthenticated || true
         env:
           KEY_FILE: ${{ secrets.KEY_FILE }}
+          
+      - name: ZAP Scan
+        uses: zaproxy/action-full-scan@v0.10.0
+        with:
+          target: 'https://groupproject-frontend-hlfxsphkja-ew.a.run.app'
 
 
