@@ -10,10 +10,9 @@ import SentryCard from "../../components/SentryCard";
 import {useAuth} from "../../context/AuthProvider";
 import {getSavedFilterSettings, updateFilterSettings} from "../../data/Helpers";
 import {Dialog, DialogContent} from "@mui/material";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import OrganizationsPage from "../Organizations/OrganizationsPage";
 import OrganizationForm from "../../components/OrganizationForm";
+import Paper from "@mui/material/Paper";
 
 export default function SentryTab() {
     const [filterSettings, setFilterSettings] = useState(getSavedFilterSettings('sentryFilterSettings'));
@@ -23,7 +22,6 @@ export default function SentryTab() {
     const [open, setOpen] = useState(false);
     const handleOpen = () => {
         setOpen(true);
-        console.log("opened")
     };
 
     const handleClose = () => {
@@ -39,8 +37,8 @@ export default function SentryTab() {
             setIsLoading(true);
             try {
                 await updateFilterSettings(filterSettings, 'sentryFilterSettings');
-                const fetchedData = await getSentryProjectsFiltered("");
-                // const fetchedData = await getSentryProjectsFiltered(authState.token);
+                const fetchedData = await getSentryProjectsFiltered(authState.token);
+                console.log(fetchedData);
                 setDeploymentsData(fetchedData);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -59,20 +57,27 @@ export default function SentryTab() {
             justifyContent: "flex-start", flexDirection: "row",
             alignItems: "bottom", maxHeight: "90vh", overflow: 'auto',
         }}>
-            <Box sx={{mr: "auto", height:"80vh", flexBasis: "20%", flexGrow: 1, minWidth: "15%", flexDirection:"column", justifyContent:"space-between"}}>
+            <Box sx={{
+                mr: "auto",
+                height: "80vh",
+                flexBasis: "20%",
+                flexGrow: 1,
+                flexDirection: "column",
+                maxWidth:"15%",
+                justifyContent: "space-between"
+            }}>
                 <Box sx={{overflowY: 'auto', flexGrow: 1, height: "80vh",
                     m: 1,
                     p: 1,
                     border: "1px solid black",
                     display: "flex",
                     justifyContent: "flex-start",
-                    alignItems: "flex-start",
+                    alignItems: "flex-start", width:"90%",
                     flexDirection: "column",}}>
                     <FilterSection filterOptions={filterSettings} updateData={updateData} />
                 </Box>
 
-                <Box sx={{  border: "1px solid black",
-                    display: "flex",
+                <Box sx={{ display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     flexDirection: "column", height: "3vh",flexBasis: "20%", flexGrow: 1,   m: 1,
@@ -88,7 +93,19 @@ export default function SentryTab() {
             </Box>
 
             {isLoading ? (
-                <Loader isLoading={true}/>
+                <Paper sx={{
+                    width: "100%",
+                    height: "85vh",
+                    m: 1,
+                    p: 1,
+                    border: "1px solid black",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "column",
+                }}>
+                    <Loader isLoading={true}/>
+                </Paper>
             ) : (
                 <DeploymentsList ProjectComponent={SentryCard}  data={deploymentsData}/>
             )}

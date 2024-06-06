@@ -3,7 +3,7 @@ import { TextField, Button, Grid, Box, Dialog, DialogContent, List, ListItem, Li
 import CssBaseline from "@mui/material/CssBaseline";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useAuth} from "../context/AuthProvider";
-import {addOrganization, GetOrganizations} from "../data/DeploymentsService";
+import {addOrganization, deleteOrganization, GetOrganizations} from "../data/DeploymentsService";
 
 
 export default function OrganizationForm() {
@@ -12,28 +12,32 @@ export default function OrganizationForm() {
     const [organizations, setOrganizations] = useState([]);
     const [tab, setTab] = useState(0);
     const { authState } = useAuth();
+    console.log(organizations)
     useEffect(() => {
         const fetchOrganizations = async () => {
             const orgs = await GetOrganizations(authState.token);
+            console.log("orgs", orgs)
             setOrganizations(orgs);
         };
 
         fetchOrganizations();
     }, []);
 
+    console.log(organizations)
 
 
+    const handleDelete = async (id) => {
 
-    const handleDelete = (index) => {
-        setOrganizations(prevOrganizations => prevOrganizations.filter((_, i) => i !== index));
+        await deleteOrganization(authState.token, id);
+        const updatedOrganizations = await GetOrganizations(authState.token);
+        setOrganizations(updatedOrganizations);
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const status = await addOrganization(authState.token, { organizationID, integrationToken });
+        const status = await addOrganization(authState.token, { organizationsID : organizationID, integrationToken });
         if (status === 200) {
-            setOrganizations(prevOrganizations => [...prevOrganizations, { organizationID, integrationToken }]);
-            setOrganizationID("");
+            setOrganizations( await GetOrganizations(authState.token));
             setIntegrationToken("");
             setTab(0);
         }
@@ -62,10 +66,11 @@ export default function OrganizationForm() {
                     organizations.length > 0 ? (
                         <List sx={{width:"100%"}}>
                             {organizations && organizations.map((organization, index) => (
+
                                 <ListItem key={index}>
-                                    <ListItemText primary={organization.organizationID} />
+                                    <ListItemText color={"black"} primary={organization.organizationsID} />
                                     <ListItemSecondaryAction>
-                                        <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(index)}>
+                                        <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(organization.id)}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </ListItemSecondaryAction>

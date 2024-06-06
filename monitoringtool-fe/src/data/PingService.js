@@ -42,7 +42,6 @@ export async function GetAllPingProjects() {
 
 }
 function mapData(data) {
-    console.log(data)
     return data.map(item => ({
         type: 'curler',
         isOnline: item.isUp,
@@ -65,7 +64,7 @@ const getCurlerProjects = async (token) => {
         return mapData(response.data);
     } catch (error) {
         console.error("Error fetching data:", error);
-        throw error;
+      return [];
     }
 
 

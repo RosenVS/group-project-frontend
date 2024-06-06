@@ -16,7 +16,6 @@ export default function PingCard({key, projectData}){
     }
     const [open, setOpen] = useState(false);
 
-
     const handleOpen = () => {
         setOpen(true);
     };
@@ -25,7 +24,6 @@ export default function PingCard({key, projectData}){
         setOpen(false);
 
     };
-    console.log(projectData)
     return (
         <Card sx={{
             width: "100%",
@@ -73,8 +71,6 @@ export default function PingCard({key, projectData}){
                             <RegisterProject fontSize={"large"} sx={{  color: "yellow"}} />
                         :
                             <>
-
-
                             {
 
                                 isOnline
@@ -82,7 +78,7 @@ export default function PingCard({key, projectData}){
                                     <CheckCircleOutlineOutlinedIcon fontSize={"large"} sx={{  color: "green"}} />
                                     :
                                     <>
-                                        <Typography variant="body2" color="text.secondary" sx={{  pb:3, }}>
+                                        <Typography variant="body2" color="text.secondary" sx={{}}>
                                             Last successful ping: {convertToDate(lastChecked)}
                                         </Typography>
                                         <CancelOutlinedIcon  fontSize={"large"} sx={{  color: "red"}} />

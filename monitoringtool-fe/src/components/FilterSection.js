@@ -32,7 +32,7 @@ const FilterSection = ({ filterOptions, updateData }) => {
     }
 
     return (
-        <Box sx={{overflowY:'auto', maxHeight:"100%"}}>
+        <Box sx={{overflowY:'auto',maxHeight:"100%"}}>
             <TextField
                 sx={{ p: 1, m: 1,  width: "90%",  '& .MuiInputBase-root': { height: '40px'  } }}
                 id="search"
@@ -51,14 +51,18 @@ const FilterSection = ({ filterOptions, updateData }) => {
                 }}
             />
 
+            <Box >
 
-            {
-                (Array.isArray(filters) && filters.length > 0) && filters.map((category) => (
-                <FilterComponent mainTitle={category.title}
-                                 data={category.options}
-                                 updateData={(updatedOptions) => update(category.title,updatedOptions)} />
 
-            ))}
+                {
+                    (Array.isArray(filters) && filters.length > 0) && filters.map((category) => (
+                        <FilterComponent mainTitle={category.title}
+                                         data={category.options}
+                                         updateData={(updatedOptions) => update(category.title,updatedOptions)} />
+
+                    ))}
+            </Box>
+
         </Box>
     );
 };

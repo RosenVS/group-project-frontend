@@ -1,30 +1,8 @@
 import axios from "axios";
-import {useAuth} from '../context/AuthProvider';
 import {filterAndSearchProjects, getSavedFilterSettings, updateFilterSettings} from "./Helpers";
+
+
 const baseURL = process.env.REACT_APP_URLsChecker_URL || 'http://localhost:8081/';
-const ax = axios.create({
-    baseURL: 'http://localhost:8081/',
-    headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Credentials': true
-    },
-    withCredentials: true
-});
-
-
-ax.interceptors.request.use(function (config) {
-    const {authState} = useAuth();
-
-    if (authState && authState.accessToken) {
-        config.headers.Authorization = `Bearer ${authState.accessToken}`;
-    }
-
-    return config;
-});
-
-
-
-
 
 function updateSentryProjects(projects, savedFilterData){
     let platforms = [];
@@ -58,53 +36,44 @@ function mapSentryData(data,organization) {
     return data.map(item => ({
         id: item.id,
         name: item.name,
+        slug: item.slug,
         type: 'sentry',
         platform: item.platform,
-        organization: organization.name,
-        latestRelease: item.latestRelease,
+        organization: organization.organizationsID,
         latestResponse: new Date()
     }))
 }
 
 const getSentryProjects = async (token) => {
-    
     const organizations = await GetOrganizations(token);
-    const organization = "dad-7r";
+
     const ax = axios.create({
         baseURL: baseURL,
         headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Credentials': true,
             'Access-Control-Allow-Origin': true,
-            'Authorization': `Bearer ${token}` // Set the Authorization header here
+            'Authorization': `Bearer ${token}`
         },
         withCredentials: false
     });
-    var response  =  await ax.get(`https://sentry-service-hlfxsphkja-ew.a.run.app/api/projects/dad-7r`);
-    console.log(response)
-    if (response.status === 200) {
-        return mapSentryData(response.data, organization);
-        // map data and return
-    }else return [];
 
+    const projectsPromises = organizations.map((organization) =>
+        ax.get(`https://sentry-service-hlfxsphkja-ew.a.run.app/api/projects/${organization.organizationsID}`)
+    );
 
+    const responses = await Promise.all(projectsPromises);
 
+    const projects = responses.reduce((acc, response, index) => {
+        if (response.status === 200) {
+            const organizationProjects = mapSentryData(response.data, organizations[index]);
+            return [...acc, ...organizationProjects];
+        }
+        return acc;
+    }, []);
 
-    // let platforms = ['Windows', 'macOS', 'Linux', 'iOS', 'Android'];
-    //
-    // let sentryProjects = Array.from({length: 20}, (_, i) => ({
-    //     id: `id${i + 1}`,
-    //     type: 'sentry',
-    //     name: `Project ${i + 1}`,
-    //     organization: `Organization ${i}`,
-    //     platform: platforms[i % platforms.length],
-    //     idOnline: true,
-    //     latestResponse: new Date()
-    // }));
-
-    // return sentryProjects;
+    return projects;
 }
-
 
 export async function getSentryProjectsFiltered(token) {
     // get slug from storage somewhere
@@ -122,43 +91,82 @@ export async function getSentryProjectsFiltered(token) {
 }
 
 const mapOrganizations = (response) => {
-    return response.data.map(item => ({
+
+    return response.map(item => ({
         id: item.id,
-        name: item.name,
+        organizationsID: item.organizationsID,
+        integrationToken:item.integrationToken,
         type: 'organization'
     }));
 };
+const mapIssues = (issues) => {
 
+    return  issues.map(issue => ({
+        type:"issue",
+        id: issue.id,
+        title: issue.title,
+        level: issue.level,
+        status: issue.status,
+        firstSeen: issue.firstSeen,
+        lastSeen: issue.lastSeen,
+        count: issue.count,
+        userCount: issue.userCount,
+        platform: issue.platform,
+        culprit: issue.culprit
+    }));
+
+}
 
 export async function GetOrganizations(token){
     try {
-        const response = await ax.get(`${baseURL}/api/organizations`, {
+        const ax = axios.create({
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
                 'Access-Control-Allow-Origin': true,
-                'Authorization': `Bearer ${token}` // Set the Authorization header here
+                'Authorization': `Bearer ${token}`
             },
+            withCredentials: false
         });
+        const response = await ax.get(`https://sentry-service-hlfxsphkja-ew.a.run.app/api/organizations`);
         return mapOrganizations(response.data);
-        // return mapData(response.data);
     } catch (error) {
         console.error("Error fetching data:", error);
         return [];
-        //  throw error;
     }
 }
 
 export async function addOrganization(token, organization){
     try {
-        const response = await ax.post(`${baseURL}/api/organizations`, organization, {
+        const ax = axios.create({
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
                 'Access-Control-Allow-Origin': true,
-                'Authorization': `Bearer ${token}` // Set the Authorization header here
+                'Authorization': `Bearer ${token}`
             },
+            withCredentials: false
         });
+        const response = await ax.post(`https://sentry-service-hlfxsphkja-ew.a.run.app/api/organizations`, organization);
+        return response.status;
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        throw error;
+    }
+}
+export async function deleteOrganization(token, id){
+    try {
+        const ax = axios.create({
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Credentials': true,
+                'Access-Control-Allow-Origin': true,
+                'Authorization': `Bearer ${token}`
+            },
+            withCredentials: false
+        });
+         const response = await ax.delete(`https://sentry-service-hlfxsphkja-ew.a.run.app/api/organizations/${id}`);
+
         return response.status;
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -166,3 +174,21 @@ export async function addOrganization(token, organization){
     }
 }
 
+export async function  getSentryIssues(token, organization, slug){
+    try {
+        const ax = axios.create({
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Credentials': true,
+                'Access-Control-Allow-Origin': true,
+                'Authorization': `Bearer ${token}` // Set the Authorization header here
+            },
+            withCredentials: false
+        });
+        const response = await ax.get(`https://sentry-service-hlfxsphkja-ew.a.run.app/api/projects/${organization}/${slug}`);
+        return mapIssues(response.data)
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        throw error;
+    }
+}

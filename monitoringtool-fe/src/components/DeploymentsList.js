@@ -2,8 +2,9 @@ import {Paper} from "@mui/material";
 import React from "react";
 import Box from "@mui/material/Box";
 
-export default function DeploymentsList({data, ProjectComponent}){
-
+export default function DeploymentsList({data,  ProjectComponent}){
+    data.map(projectData => console.log(projectData));
+    console.log("Deployments list", data);
     return(
         <Paper sx={{
             width: "100%",
@@ -25,7 +26,7 @@ export default function DeploymentsList({data, ProjectComponent}){
                 alignItems: "center",
             }}>
                 {
-                    data.map((projectData) => (
+                    data.map( projectData  => (
                         <ProjectComponent projectData={projectData} />
                     ))
                 }

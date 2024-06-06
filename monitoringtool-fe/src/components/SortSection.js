@@ -4,29 +4,17 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import Box from "@mui/material/Box";
 
-export default function SortSection({ updateSortMethod, updateFailingOnTop }) {
+export default function SortSection({ updateSortMethod }) {
     const handleSortChange = (event) => {
         updateSortMethod(event.target.value);
     };
 
-    const handleCheckboxChange = (event) => {
-        updateFailingOnTop(event.target.checked);
-    };
+
 
     return (
-        <Box sx={{display:"flex", flexDirection:"row",
-            alignItems:"space-between", justifyContent:"space-between", width:"100%", }}>
-            {/*<FormControlLabel*/}
-            {/*    control={*/}
-            {/*        <Checkbox*/}
-            {/*            onChange={handleCheckboxChange}*/}
-            {/*            name="failingOnTop"*/}
-            {/*            color="primary"*/}
-            {/*        />*/}
-            {/*    }*/}
-            {/*    label="See failing"*/}
-            {/*/>*/}
-            <FormControl variant="standard">
+        <Box sx={{display:"flex", flexDirection:"column",
+            alignItems:"center", justifyContent:"center", width:"100%"}}>
+            <FormControl variant="standard"  sx={{width:"90%", display:"flex", justifyContent:"center", alignItems:"canter"}}>
                 <InputLabel id="sort-label">Sort by</InputLabel>
                 <Select
                     labelId="sort-label"

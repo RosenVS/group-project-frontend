@@ -19,14 +19,9 @@ function App({theme}) {
             
             <NavBar/>
             <Routes>
-                {/*<Route element={<RequireAuth />}>*/}
                     <Route path="/projects" element={<AuthenticatedProjectsPage />} />
                     <Route path="/" element={<AuthenticatedProjectsPage />} />
-                {/*</Route>*/}
 
-                {/*<Route element={<RequireAuth />}>*/}
-                {/*     <Route path={"/register_project"} element={<RegisterProject/>}/>*/}
-                {/*</Route>*/}
                 <Route path={"/signup"} element={<Signup/>}/>
                 <Route path={"/login"} element={<Login theme={theme}/>}/>
                 <Route path={"/logout"} element={<Logout/>}/>

@@ -7,10 +7,9 @@ export default function RequireAuth(Component) {
         const location = useLocation();
         console.log(Component, authState)
         return (
-            // authState
-            //     ? 
-                <Component {...props} />
-                // : <Navigate to="/login" state={{ from: location }} replace />
+            authState
+                ? <Component {...props} />
+                : <Navigate to="/login" state={{ from: location }} replace />
         );
     };
 }

@@ -1,93 +1,3 @@
-// import React, {useEffect, useState} from "react";
-// import Box from "@mui/material/Box";
-// import Loader from "../../components/common/Loader";
-// import DeploymentsList from "../../components/DeploymentsList";
-// import {useAuth} from "../../context/AuthProvider";
-// import {getSentryProjectsFiltered} from "../../data/DeploymentsService";
-// import {getCurlerProjectsFiltered} from "../../data/PingService";
-// import PingCard from "../../components/PingCard";
-// import SentryCard from "../../components/SentryCard";
-//
-// export default function AllTab() {
-//     const [isLoading, setIsLoading] = useState(true);
-//     const [allProjects, setAllProjects] = useState([]);
-//     const { authState } = useAuth();
-//     useEffect(() => {
-//         const fetchData = async () => {
-//             setIsLoading(true);
-//             try {
-//                 const sentryProjects = await getSentryProjectsFiltered(authState.token);
-//                 const curlerProjects = await getCurlerProjectsFiltered(authState.token);
-//                 let allProjects = [...curlerProjects,...sentryProjects];
-//                 allProjects.sort((a, b) => {
-//                     // If one project is initializing and the other is not, the initializing one should come first
-//                     if (a.IsInitializing && !b.IsInitializing) {
-//                         return -1;
-//                     }
-//                     if (!a.IsInitializing && b.IsInitializing) {
-//                         return 1;
-//                     }
-//
-//                     // If one project is offline and the other is not, the offline one should come first
-//                     if (!a.isOnline && b.isOnline) {
-//                         return -1;
-//                     }
-//                     if (a.isOnline && !b.isOnline) {
-//                         return 1;
-//                     }
-//
-//                     // If both projects have the same online status and initializing status, sort by lastResponse
-//                     return new Date(b.lastResponse) - new Date(a.lastResponse);
-//                 });
-//                 setAllProjects(allProjects);
-//             } catch (error) {
-//                 console.error('Error fetching data:', error);
-//             } finally {
-//                 setIsLoading(false);
-//             }
-//         };
-//
-//         fetchData();
-//     }, []);
-//     return (
-//         <Box component="main" sx={{
-//             display: "flex",
-//             justifyContent: "flex-start", flexDirection: "row",
-//             alignItems: "bottom", maxHeight: "90vh", overflow: 'auto',
-//         }}>
-//             <Box sx={{mr: "auto", height:"80vh", flexBasis: "20%", flexGrow: 1, minWidth: "15%", flexDirection:"column", justifyContent:"space-between"}}>
-//                 <Box sx={{overflowY: 'auto', flexGrow: 1, height: "80vh",
-//                     m: 1,
-//                     p: 1,
-//                     border: "1px solid black",
-//                     display: "flex",
-//                     justifyContent: "flex-start",
-//                     alignItems: "flex-start",
-//                     flexDirection: "column",}}>
-//                     {/*<FilterSection filterOptions={filterSettings} updateData={updateData} />*/}
-//                 </Box>
-//             </Box>
-//
-//             {isLoading ? (
-//                 <Loader isLoading={true}/>
-//             ) : (
-//                 <DeploymentsList
-//                     data={allProjects}
-//                     ProjectComponent={({projectData}) => {
-//                         return projectData.type === 'sentry' ?
-//                             <SentryCard projectData={projectData} />
-//                             :
-//                             <PingCard projectData={projectData} />;
-//                     }}
-//                 />
-//             )}
-//         </Box>
-//     )
-// }
-
-
-
-
 import React, {useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import Loader from "../../components/common/Loader";
@@ -98,6 +8,7 @@ import {getCurlerProjectsFiltered} from "../../data/PingService";
 import PingCard from "../../components/PingCard";
 import SentryCard from "../../components/SentryCard";
 import TextField from "@mui/material/TextField";
+import Paper from "@mui/material/Paper";
 import {InputAdornment} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
@@ -106,22 +17,24 @@ import SortSection from "../../components/SortSection";
 export default function AllTab() {
     const [isLoading, setIsLoading] = useState(true);
     const [allProjects, setAllProjects] = useState([]);
-    const [sortMethod, setSortMethod] = useState('failing');
-    const [failingOnTop, setFailingOnTop] = useState(false);
+    const [sortedProjects, setSortedProjects] = useState([]);
+    const [sortMethod, setSortMethod] = useState('newtoOld');
     const [searchString, setSearchString] = useState('');
 
     const handleSearchChange = (event) => {
         setSearchString(event.target.value);
     };
     const handleSearch = () => {
+        if (searchString === '') {
+            setSortedProjects(allProjects);
+            return;
+        }
         const filteredProjects = allProjects.filter(project =>
             project.name.toLowerCase().includes(searchString.toLowerCase())
         );
-        setAllProjects(filteredProjects);
+        setSortedProjects(filteredProjects);
     };
-    const updateFailingOnTop = (value) => {
-        setFailingOnTop(value);
-    };
+
     const {authState} = useAuth();
 
     const updateSortMethod = (newSortMethod) => {
@@ -136,24 +49,19 @@ export default function AllTab() {
                 const curlerProjects = await getCurlerProjectsFiltered(authState.token);
                 let allProjects = [...curlerProjects, ...sentryProjects];
                 allProjects.sort((a, b) => {
-                    if (failingOnTop) {
-                        if (a.IsInitializing && !b.IsInitializing) {
-                            return -1;
-                        }
-                        if (!a.IsInitializing && b.IsInitializing) {
-                            return 1;
-                        }
-
-                        if (!a.isOnline && b.isOnline) {
-                            return -1;
-                        }
-                        if (a.isOnline && !b.isOnline) {
-                            return 1;
-                        }
-
-                        return new Date(b.latestResponse) - new Date(a.latestResponse);
+                    if (a.IsInitializing && !b.IsInitializing) {
+                        return -1;
+                    }
+                    if (!a.IsInitializing && b.IsInitializing) {
+                        return 1;
                     }
 
+                    if (!a.isOnline && b.isOnline) {
+                        return -1;
+                    }
+                    if (a.isOnline && !b.isOnline) {
+                        return 1;
+                    }
                     if (sortMethod === 'newToOld') {
                         // Sort from new to old
                         return new Date(b.latestResponse) - new Date(a.latestResponse);
@@ -163,6 +71,7 @@ export default function AllTab() {
                     }
                 });
                 setAllProjects(allProjects);
+                setSortedProjects(allProjects); // Corrected line
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {
@@ -171,20 +80,21 @@ export default function AllTab() {
         };
 
         fetchData();
-    }, [sortMethod, failingOnTop]); // Add failingOnTop as a dependency
+    }, [sortMethod]);
     return (
         <Box component="main" sx={{
             display: "flex",
             justifyContent: "flex-start", flexDirection: "row",
-            alignItems: "bottom", maxHeight: "90vh", overflow: 'auto',
+            alignItems: "bottom", maxHeight: "90vh", overflow: 'auto', width:"100vw"
         }}>
             <Box sx={{
                 mr: "auto",
                 height: "80vh",
                 flexBasis: "20%",
                 flexGrow: 1,
-                minWidth: "15%",
+                // minWidth: "15%",
                 flexDirection: "column",
+                maxWidth:"15%",
                 justifyContent: "space-between"
             }}>
                 <Box sx={{overflowY: 'auto', flexGrow: 1, height: "85vh",
@@ -212,15 +122,27 @@ export default function AllTab() {
                             ),
                         }}
                     />
-                    <SortSection updateSortMethod={updateSortMethod} updateFailingOnTop={updateFailingOnTop}/>
+                    <SortSection updateSortMethod={updateSortMethod} />
                 </Box>
             </Box>
 
             {isLoading ? (
-                <Loader isLoading={true}/>
+                <Paper sx={{
+                    width: "100%",
+                    height: "85vh",
+                    m: 1,
+                    p: 1,
+                    border: "1px solid black",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "column",
+                }}>
+                    <Loader isLoading={true}/>
+                </Paper>
             ) : (
                 <DeploymentsList
-                    data={allProjects}
+                    data={sortedProjects}
                     ProjectComponent={({projectData}) => {
                         return projectData.type === 'sentry' ?
                             <SentryCard projectData={projectData}/>
