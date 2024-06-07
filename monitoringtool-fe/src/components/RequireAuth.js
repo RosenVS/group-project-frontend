@@ -8,8 +8,9 @@ export default function RequireAuth(Component) {
         console.log(Component, authState)
         return (
             authState
-                ? <Component {...props} />
-                : <Navigate to="/login" state={{ from: location }} replace />
+                ? 
+                <Component {...props} />
+                : <Component {...props} />
         );
     };
 }
