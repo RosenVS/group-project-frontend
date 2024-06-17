@@ -2,7 +2,7 @@
 import axios from "axios";
 export function login(email, password){
     const ax = axios.create({
-        baseURL: 'http://localhost:5075'
+        baseURL: 'https://user-service-hlfxsphkja-ew.a.run.app'
     });
     return ax.post("/login", JSON.stringify({ email, password }),
         {
@@ -14,7 +14,7 @@ export function login(email, password){
 export function signup(name, email, password){
 
     const ax = axios.create({
-        baseURL: 'http://localhost:5075'
+        baseURL: 'https://user-service-hlfxsphkja-ew.a.run.app'
     });
     return ax.post("/register", JSON.stringify({ name, email, password }),
         {

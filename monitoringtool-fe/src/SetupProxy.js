@@ -21,6 +21,23 @@ module.exports = function(app) {
             changeOrigin: true,
         })
     );
-
+    app.use(
+        '/login',
+        createProxyMiddleware({
+            // target: 'http://localhost:8080',
+            target: 'https://user-service-hlfxsphkja-ew.a.run.app/',
+            // target: 'https://foodmotion-api-gateway-6xxrfy77.ew.gateway.dev',
+            changeOrigin: true,
+        })
+    );
+    app.use(
+        '/register',
+        createProxyMiddleware({
+            // target: 'http://localhost:8080',
+            target: 'https://user-service-hlfxsphkja-ew.a.run.app/',
+            // target: 'https://foodmotion-api-gateway-6xxrfy77.ew.gateway.dev',
+            changeOrigin: true,
+        })
+    );
 
 };
