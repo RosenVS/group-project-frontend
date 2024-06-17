@@ -1,65 +1,3 @@
-# name: Build and Deploy to Cloud Run
-
-# on:
-#   push:
-#     branches: [ "main" ]
-
-# env:
-#   PROJECT_ID: inbound-pattern-422518-k7 # TODO: update Google Cloud project id
-#   APP_NAME: groupproject-frontend # TODO: update Artifact Registry location
-#   SER_NAME: groupproject-frontend # TODO: update Artifact Registry location
-#   REGION: europe-west1 # TODO: update Cloud Run service region
-#   SER_PORT: 8081 # TODO: update Cloud Run service region
-
-# jobs:
-#   deploy:
-#     permissions:
-#       contents: 'read'
-#       id-token: 'write'
-
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v2
-      
-
-#      - name: Build Image, Push to Registry, Deploy to Cloud Run
-#        run: |
-#          export IMAGE_NAME=europe-west1-docker.pkg.dev/${{env.PROJECT_ID}}/${{env.APP_NAME}}/${{env.SER_NAME}}:$GITHUB_SHA
-#          echo '${{ secrets.KEY_FILE }}' | jq '.' > client-secret.json
-#          gcloud auth activate-service-account individual-account@inbound-pattern-422518-k7.iam.gserviceaccount.com --key-file client-secret.json
-#          gcloud config set project ${{env.PROJECT_ID}}
-#          gcloud auth configure-docker europe-west1-docker.pkg.dev
-#          export DOCKER_BUILDKIT=0
-#          docker build -t $IMAGE_NAME .
-#          docker push $IMAGE_NAME
-#          gcloud run deploy ${{env.SER_NAME}} --image $IMAGE_NAME --port ${{env.SER_PORT}} --region ${{env.REGION}} --cpu=1 --memory=1Gi --timeout=3000 --allow-unauthenticated || true
-#        env:
-#          KEY_FILE: ${{ secrets.KEY_FILE }}
-          
-
-#      # - name: ZAP Scan
-#      #   uses: zaproxy/action-baseline@v0.12.0
-#      #   with:
-#      #     target: 'https://www.zaproxy.org'
-
-
-    
-#       - name: ZAP Scan
-#         uses: zaproxy/action-baseline@v0.12.0
-#         with:
-#           token: ${{ secrets.GITHUB }}
-#           docker_name: 'ghcr.io/zaproxy/zaproxy:stable'
-#           target: 'https://www.zaproxy.org'
-#           rules_file_name: '.zap/rules.tsv'
-#           cmd_options: '-a'
-
-
-
-
-
-
-
 
 name: Cypress Tests and Cloud Run Deployment
 
@@ -72,52 +10,17 @@ on:
       - main
 
 jobs:
-  # cypress:
-  #   name: Cypress Tests
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
-
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '16'
-
-  #     - name: Install dependencies
-  #       run: npm install
-  #       working-directory: ./monitoringtool-fe
-
-  #     - name: Start application
-  #       run: npm start &
-  #       working-directory: ./monitoringtool-fe
-
-  #     - name: Wait for application to be ready
-  #       run: npx wait-on http://localhost:3000
-
-  #     - name: Run Cypress tests
-  #       run: npx cypress run
-  #       working-directory: ./monitoringtool-fe
-
-  #     - name: Archive test results
-  #       if: always()
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: cypress-results
-  #         path: ./monitoringtool-fe/cypress/results
-
   deploy:
     name: Build and Deploy to Cloud Run
     runs-on: ubuntu-latest
     needs: cypress
 
     env:
-      PROJECT_ID: inbound-pattern-422518-k7 # TODO: update Google Cloud project id
-      APP_NAME: groupproject-frontend # TODO: update Artifact Registry location
-      SER_NAME: groupproject-frontend # TODO: update Artifact Registry location
-      REGION: europe-west1 # TODO: update Cloud Run service region
-      SER_PORT: 8081 # TODO: update Cloud Run service region
+      PROJECT_ID: inbound-pattern-422518-k7
+      APP_NAME: groupproject-frontend
+      SER_NAME: groupproject-frontend
+      REGION: europe-west1
+      SER_PORT: 8081
 
     steps:
       - name: Checkout
@@ -157,9 +60,12 @@ jobs:
         with:
           token: ${{ secrets.GITHUB }}
           docker_name: 'ghcr.io/zaproxy/zaproxy:stable'
-          target: 'https://groupproject-frontend-hlfxsphkja-ew.a.run.app/'
+          target: 'https://groupproject-frontend-hlfxsphkja-ew.a.run.app'
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a'
+
+
+
 
 
 
