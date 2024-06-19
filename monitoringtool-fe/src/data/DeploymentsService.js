@@ -2,7 +2,8 @@ import axios from "axios";
 import {filterAndSearchProjects, getSavedFilterSettings, updateFilterSettings} from "./Helpers";
 
 
-const baseURL = process.env.REACT_APP_URLsChecker_URL || 'http://localhost:8081/';
+// const baseURL = process.env.REACT_APP_URLsChecker_URL || 'http://localhost:8081/';
+const baseURL = process.env.REACT_APP_URLsChecker_URL || 'https://curler-hlfxsphkja-ew.a.run.app/';
 
 function updateSentryProjects(projects, savedFilterData){
     let platforms = [];

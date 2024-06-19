@@ -39,5 +39,12 @@ module.exports = function(app) {
             changeOrigin: true,
         })
     );
-
+    app.use(
+        '/api/URLsChecker',
+        createProxyMiddleware({
+            target: 'https://curler-hlfxsphkja-ew.a.run.app/',
+            changeOrigin: true,
+        })
+    );
+    
 };
