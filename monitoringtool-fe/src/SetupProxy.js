@@ -21,6 +21,7 @@ module.exports = function(app) {
             changeOrigin: true,
         })
     );
+
     app.use(
         '/login',
         createProxyMiddleware({
@@ -30,6 +31,7 @@ module.exports = function(app) {
             changeOrigin: true,
         })
     );
+
     app.use(
         '/register',
         createProxyMiddleware({
@@ -39,6 +41,7 @@ module.exports = function(app) {
             changeOrigin: true,
         })
     );
-   
     
+
+
 };
