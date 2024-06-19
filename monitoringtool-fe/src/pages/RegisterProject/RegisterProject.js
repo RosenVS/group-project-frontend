@@ -34,7 +34,7 @@ export default function RegisterProject({onClose}) {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:8085/projects', formData);
+            const response = await axios.post('https://curler-hlfxsphkja-ew.a.run.app/projects', formData);
             if (response.status === 200) {
                 alert('Project registered successfully!');
                 onClose();
@@ -42,7 +42,7 @@ export default function RegisterProject({onClose}) {
                 setError(response.data.message || 'Registration Failed');
             }
 
-            const msTempReg = await axios.post("http://localhost:5132/api/URLsChecker", {},{
+            const msTempReg = await axios.post("https://curler-hlfxsphkja-ew.a.run.app/api/URLsChecker", {},{
                 params: {
                     url:formData.url,
                     name:formData.name,
