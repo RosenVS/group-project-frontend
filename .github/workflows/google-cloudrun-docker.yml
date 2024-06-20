@@ -20,7 +20,7 @@ jobs:
       APP_NAME: groupproject-frontend
       SER_NAME: groupproject-frontend
       REGION: europe-west1
-      SER_PORT: 8081
+      SER_PORT: 8088
 
     steps:
       - name: Checkout
