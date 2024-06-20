@@ -34,6 +34,12 @@ export default function RegisterProject({onClose}) {
         e.preventDefault();
         setLoading(true);
         try {
+            const msTempReg = await axios.post("http://localhost:5132/api/URLsChecker", {},{
+                params: {
+                    url:formData.url,
+                    name:formData.name,
+                },
+            });
             const response = await axios.post('http://localhost:8085/projects', formData);
             if (response.status === 200) {
                 alert('Project registered successfully!');
@@ -42,12 +48,7 @@ export default function RegisterProject({onClose}) {
                 setError(response.data.message || 'Registration Failed');
             }
 
-            const msTempReg = await axios.post("http://localhost:5132/api/URLsChecker", {},{
-                params: {
-                    url:formData.url,
-                    name:formData.name,
-                },
-            });
+           
 
 
 
