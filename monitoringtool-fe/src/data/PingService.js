@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuth } from '../context/AuthProvider';
 import {getSavedFilterSettings, searchProjects, updateFilterSettings} from "./Helpers";
 
-const baseURL = process.env.REACT_APP_URLsChecker_URL || 'https://groupproject-frontend-hlfxsphkja-ew.a.run.app';
+const baseURL = process.env.REACT_APP_URLsChecker_URL || 'https://curler-hlfxsphkja-ew.a.run.app';
 
 const ax = axios.create({
     baseURL: baseURL
@@ -20,7 +20,7 @@ ax.interceptors.request.use(function (config) {
 
 export async function GetAllPingProjects() {
     try {
-        const response = await ax.get("https://groupproject-frontend-hlfxsphkja-ew.a.run.app/api/URLsChecker", {
+        const response = await ax.get("https://curler-hlfxsphkja-ew.a.run.app/api/URLsChecker", {
             headers: { 'Content-Type': 'application/json' }
         });
         return mapData(response.data);
@@ -58,7 +58,7 @@ function mapData(data) {
 const getCurlerProjects = async (token) => {
 
     try {
-        const response = await ax.get("https://groupproject-frontend-hlfxsphkja-ew.a.run.app/api/URLsChecker", {
+        const response = await ax.get("https://curler-hlfxsphkja-ew.a.run.app/api/URLsChecker", {
             headers: { 'Content-Type': 'application/json' }
         });
         return mapData(response.data);
