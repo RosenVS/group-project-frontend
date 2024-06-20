@@ -42,6 +42,16 @@ module.exports = function(app) {
         })
     );
     
+    app.use(
+        '/projects',
+        createProxyMiddleware({
+            // target: 'http://localhost:8080',
+            target: 'https://group-project-registry-service-hlfxsphkja-ew.a.run.app/',
+            // target: 'https://foodmotion-api-gateway-6xxrfy77.ew.gateway.dev',
+            changeOrigin: true,
+        })
+    );
+    
 
 
 };

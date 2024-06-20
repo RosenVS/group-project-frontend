@@ -40,7 +40,7 @@ export default function RegisterProject({onClose}) {
                     name:formData.name,
                 },
             });
-            const response = await axios.post('http://localhost:8085/projects', formData);
+            const response = await axios.post('https://group-project-registry-service-hlfxsphkja-ew.a.run.app/projects', formData);
             if (response.status === 200) {
                 alert('Project registered successfully!');
                 onClose();
